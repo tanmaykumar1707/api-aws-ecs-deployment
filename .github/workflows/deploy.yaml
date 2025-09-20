@@ -52,7 +52,7 @@ jobs:
       - name: Reading ecs.json file and update image tag
         id: image-uri-update-ecs-json
         run: |
-          UPDATED_ECS_JSON=$(jq --arg IMG "$IMAGE_URI" '.containerDefinitions[0].image=IMAGE_URI' $ECS_TASK_DEFINITION_JSON)
+          UPDATED_ECS_JSON=$(jq --arg IMG "$IMAGE_URI" '.containerDefinitions[0].image=$IMAGE_URI' $ECS_TASK_DEFINITION_JSON)
           echo "UPDATED_ECS_JSON=$UPDATED_ECS_JSON" >> $GITHUB_ENV
 
       - name: Updating ECS task definition
