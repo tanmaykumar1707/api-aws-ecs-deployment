@@ -47,21 +47,51 @@ jobs:
           echo "Found image: $IMAGE_URI"
           echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
 
-      - name: Updating ECS task definition
-        id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: ${{ env.ECS_TASK_DEFINITION }}
-          container-name: ${{ env.ECS_CONTAINER_NAME }}
-          image: ${{ env.IMAGE_URI }}
+#      - name: Updating ECS task definition
+#        id: task-def
+#        uses: aws-actions/amazon-ecs-render-task-definition@v1
+#        with:
+#          task-definition: ${{ env.ECS_TASK_DEFINITION }}
+#          container-name: ${{ env.ECS_CONTAINER_NAME }}
+#          image: ${{ env.IMAGE_URI }}
+#
+#      - name: Deploy ECS task definition
+#        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+#        with:
+#          task-definition: ${{ steps.task-def.outputs.task-definition }}
+#          service: ${{ env.ECS_SERVICE_NAME }}
+#          cluster: ${{ env.ECS_CLUSTER_NAME }}
+#          wait-for-service-stability: true
 
-      - name: Deploy ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: ${{ env.ECS_SERVICE_NAME }}
-          cluster: ${{ env.ECS_CLUSTER_NAME }}
-          wait-for-service-stability: true
+
+      - name: Register new ECS task definition revision
+        id: task-def
+        run: |
+                NEW_TASK_DEF=$(aws ecs register-task-definition \
+                  --family $ECS_TASK_DEFINITION \
+                  --container-definitions "$(aws ecs describe-task-definition \
+                       --task-definition $ECS_TASK_DEFINITION \
+                       --query 'taskDefinition.containerDefinitions' \
+                       | jq --arg IMAGE "$IMAGE_URI" '.[] | .image=$IMAGE | [.]')")
+                
+                TASK_DEF_REVISION=$(echo $NEW_TASK_DEF | jq -r '.taskDefinition.taskDefinitionArn')
+                echo "NEW_TASK_DEF=$TASK_DEF_REVISION" >> $GITHUB_ENV
+
+
+      - name: Update ECS service to use new task definition
+        run: |
+          aws ecs update-service \
+            --cluster $ECS_CLUSTER_NAME \
+            --service $ECS_SERVICE_NAME \
+            --task-definition $NEW_TASK_DEF \
+            --force-new-deployment
+
+      - name: Wait for ECS service stability
+        run: |
+          aws ecs wait services-stable \
+            --cluster $ECS_CLUSTER_NAME \
+            --services $ECS_SERVICE_NAME
+
 
       - name: Get ALB DNS
         id: alb-dns
