@@ -7,6 +7,7 @@ on:
 env:
   ECR_REGISTRY: 741448954606.dkr.ecr.ap-south-1.amazonaws.com
   ECR_REPOSITORY: testing/ecs-api-deployment
+  AWS_REGION: ap-south-1
 
 jobs:
   build-and-push:
@@ -18,6 +19,11 @@ jobs:
 
       - name: Maven clean package
         run: mvn clean package -DskipTests
+
+      - name: Login to ECR
+        run: |
+          aws ecr get-login-password --region ${{ env.AWS_REGION }} | \
+          docker login --username AWS --password-stdin ${{ env.ECR_REGISTRY }}
 
       - name: Build Docker image and push to ECR
         id : build-image
