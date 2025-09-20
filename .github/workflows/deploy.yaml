@@ -16,6 +16,7 @@ env:
   ECS_SERVICE_NAME: aad-fis-agent-api-service
   ECS_CONTAINER_NAME: aad-task-container
   ECS_TASK_DEFINITION: aad-fis-agent-api-task
+  ALB_NAME: aad-fis-agent-alb
 
 
 
@@ -35,7 +36,7 @@ jobs:
 
       - name: Check if image exists in ECR
         run: |
-          IMAGE_URI=$ECR_REGISTRY/$ECR_REPOSITORY::${{ github.event.inputs.image_tag }}
+          IMAGE_URI=$ECR_REGISTRY/$ECR_REPOSITORY:${{ github.event.inputs.image_tag }}
           if ! aws ecr describe-images --repository-name ${IMAGE_URI##*/} --image-ids imageTag=${{ github.event.inputs.image_tag }}; then
             echo "Image not found: $IMAGE_URI"
             exit 1
@@ -58,3 +59,18 @@ jobs:
           service: ${{ env.ECS_SERVICE_NAME }}
           cluster: ${{ env.ECS_CLUSTER_NAME }}
           wait-for-service-stability: true
+
+      - name: Get ALB DNS
+        id: alb-dns
+        run: |
+          DNS_NAME=$(aws elbv2 describe-load-balancers \
+            --names "${{ env.ALB_NAME }}" \
+            --query "LoadBalancers[0].DNSName" \
+            --output text)
+          echo "DNS_NAME=$DNS_NAME" >> $GITHUB_ENV
+          echo "dns_name=$DNS_NAME" >> $GITHUB_OUTPUT
+
+      - name: Add ALB DNS to workflow summary
+        run: |
+          echo "### Application URL" >> $GITHUB_STEP_SUMMARY
+          echo "ALB DNS: ${{ steps.alb-dns.outputs.dns_name }}" >> $GITHUB_STEP_SUMMARY
