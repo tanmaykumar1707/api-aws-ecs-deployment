@@ -10,6 +10,7 @@ env:
 jobs:
   build-and-push:
     runs-on: self-hosted
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -36,6 +37,10 @@ jobs:
         run: |
           docker push ${{ steps.build-image.outputs.image }}
 
-      - name: Print image tag
+      - name: Cleanup Docker image from runner
         run: |
-           echo "Docker image pushed: ${{ steps.build-image.outputs.image }} and TAG : ${{ env.IMAGE_TAG }}  "
+            docker rmi ${{ steps.build-image.outputs.image }} || true
+
+      - name: Image tag
+        run: |
+           echo "Docker image tag : ${{ env.IMAGE_TAG }} , Use this for deployment "
