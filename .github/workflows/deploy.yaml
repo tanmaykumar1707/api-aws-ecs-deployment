@@ -1,0 +1,59 @@
+name: Deploy ECS Service
+
+
+
+env:
+  ECR_REGISTRY: 741448954606.dkr.ecr.ap-south-1.amazonaws.com
+  ECR_REPOSITORY: testing/ecs-api-deployment
+  AWS_REGION: ap-south-1
+  ECS_CLUSTER_NAME: aad-fis-agent-cluster
+  ECS_SERVICE_NAME: aad-fis-agent-api-service
+  ECS_CONTAINER_NAME: aad-task-container
+  ECS_TASK_DEFINITION: aad-fis-agent-api-task
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: 'Docker image tag to deploy'
+        required: true
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+#      - name: Configure AWS credentials
+#        uses: aws-actions/configure-aws-credentials@v2
+#        with:
+#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#          aws-region: us-east-1
+
+      - name: Check if image exists in ECR
+        run: |
+          IMAGE_URI=$ECR_REGISTRY/$ECR_REPOSITORY::${{ github.event.inputs.image_tag }}
+          if ! aws ecr describe-images --repository-name ${IMAGE_URI##*/} --image-ids imageTag=${{ github.event.inputs.image_tag }}; then
+            echo "Image not found: $IMAGE_URI"
+            exit 1
+          fi
+          echo "Found image: $IMAGE_URI"
+          echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
+
+      - name: Updating ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ${{ env.ECS_TASK_DEFINITION }}
+          container-name: ${{ env.ECS_CONTAINER_NAME }}
+          image: ${{ emv.IMAGE_URI }}
+
+      - name: Deploy ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: ${{ env.ECS_SERVICE_NAME }}
+          cluster: ${{ env.ECS_CLUSTER_NAME }}
+          wait-for-service-stability: true
