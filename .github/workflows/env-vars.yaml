@@ -17,14 +17,15 @@ jobs:
       ALB_NAME: ${{ steps.set-env.outputs.ALB_NAME }}
       ECS_TASK_DEFINITION_JSON: ${{ steps.set-env.outputs.ECS_TASK_DEFINITION_JSON }}
     steps:
-      - id: set-env
+      - name: Set outputs
+        id: set-env
         run: |
-          echo "AWS_REGION=ap-south-1" >> $GITHUB_OUTPUT
-          echo "ECR_REGISTRY=741448954606.dkr.ecr.ap-south-1.amazonaws.com" >> $GITHUB_OUTPUT
-          echo "ECR_REPOSITORY=testing/ecs-api-deployment" >> $GITHUB_OUTPUT
-          echo "ECS_CLUSTER_NAME=aad-fis-agent-cluster" >> $GITHUB_OUTPUT
-          echo "ECS_SERVICE_NAME=aad-fis-agent-api-service" >> $GITHUB_OUTPUT
-          echo "ECS_CONTAINER_NAME=aad-task-container" >> $GITHUB_OUTPUT
-          echo "ECS_TASK_DEFINITION=aad-fis-agent-api-task" >> $GITHUB_OUTPUT
-          echo "ALB_NAME=aad-fis-agent-alb" >> $GITHUB_OUTPUT
-          echo "ECS_TASK_DEFINITION_JSON=ecs.json" >> $GITHUB_OUTPUT
+          echo "::set-output name=AWS_REGION::ap-south-1"
+          echo "::set-output name=ECR_REGISTRY::741448954606.dkr.ecr.ap-south-1.amazonaws.com"
+          echo "::set-output name=ECR_REPOSITORY::testing/ecs-api-deployment"
+          echo "::set-output name=ECS_CLUSTER_NAME::aad-fis-agent-cluster"
+          echo "::set-output name=ECS_SERVICE_NAME::aad-fis-agent-api-service"
+          echo "::set-output name=ECS_CONTAINER_NAME::aad-task-container"
+          echo "::set-output name=ECS_TASK_DEFINITION::aad-fis-agent-api-task"
+          echo "::set-output name=ALB_NAME::aad-fis-agent-alb"
+          echo "::set-output name=ECS_TASK_DEFINITION_JSON::ecs.json"
