@@ -3,13 +3,10 @@ name: Build & Push Docker Image
 on:
   workflow_dispatch:
 
-
-env:
-  ECR_REGISTRY: 741448954606.dkr.ecr.ap-south-1.amazonaws.com
-  ECR_REPOSITORY: testing/ecs-api-deployment
-  AWS_REGION: ap-south-1
-
 jobs:
+  call-env:
+    uses: ./.github/workflows/env-vars.yaml
+
   build-and-push:
     runs-on: self-hosted
 

@@ -7,20 +7,9 @@ on:
         description: 'Docker image tag to deploy'
         required: true
 
-
-env:
-  ECR_REGISTRY: 741448954606.dkr.ecr.ap-south-1.amazonaws.com
-  ECR_REPOSITORY: testing/ecs-api-deployment
-  AWS_REGION: ap-south-1
-  ECS_CLUSTER_NAME: aad-fis-agent-cluster
-  ECS_SERVICE_NAME: aad-fis-agent-api-service
-  ECS_CONTAINER_NAME: aad-task-container
-  ECS_TASK_DEFINITION: aad-fis-agent-api-task
-  ALB_NAME: aad-fis-agent-alb
-  ECS_TASK_DEFINITION_JSON: ecs.json
-
-
 jobs:
+  call-env:
+    uses: ./.github/workflows/env-vars.yaml
   deploy:
     runs-on: self-hosted
     steps:
@@ -84,4 +73,4 @@ jobs:
       - name: Add ALB DNS to workflow summary
         run: |
           echo "### Application URL" >> $GITHUB_STEP_SUMMARY
-          echo "Application Endpoint: ${{ steps.alb-dns.outputs.dns_name }}:8080" >> $GITHUB_STEP_SUMMARY
+          echo "Application Endpoint: ${{ steps.alb-dns.outputs.dns_name }}" >> $GITHUB_STEP_SUMMARY

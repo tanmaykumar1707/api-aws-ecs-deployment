@@ -1,0 +1,21 @@
+name: Resume ECS Service
+
+on:
+  workflow_dispatch:
+
+
+
+jobs:
+  call-env:
+    uses: ./.github/workflows/env-vars.yaml
+  resume:
+    runs-on: self-hosted
+    steps:
+
+      - name: Resume ECS service
+        run: |
+          echo "Resuming ECS service..."
+          aws ecs update-service \
+            --cluster ${{ env.ECS_CLUSTER_NAME }} \
+            --service ${{ env.ECS_SERVICE_NAME }} \
+            --desired-count 1

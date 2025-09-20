@@ -1,0 +1,20 @@
+name: Pause ECS Service
+
+on:
+  workflow_dispatch:
+
+
+jobs:
+  call-env:
+    uses: ./.github/workflows/env-vars.yaml
+  pause:
+    runs-on: self-hosted
+    steps:
+
+      - name: Pause ECS service
+        run: |
+          echo "Pausing ECS service..."
+          aws ecs update-service \
+            --cluster ${{ env.ECS_CLUSTER_NAME }} \
+            --service ${{ env.ECS_SERVICE_NAME }} \
+            --desired-count 0
