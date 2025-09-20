@@ -18,7 +18,7 @@ public class DemoController {
 
     @GetMapping("/test")
     public ResponseEntity<Response> testApi() {
-        Response response = Response.builder().statusCode("200").data("This is demo build by tanmaykumar").build();
+        Response response = Response.builder().statusCode("200").data("This is demo build by tanmaykumar and full working in ecs").build();
         return  ResponseEntity.ok(response);
     }
 
