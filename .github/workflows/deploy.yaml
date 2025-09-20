@@ -52,14 +52,13 @@ jobs:
       - name: Reading ecs.json file and update image tag
         id: image-uri-update-ecs-json
         run: |
-          UPDATED_ECS_JSON=$(jq --arg IMG "$IMAGE_URI" '.containerDefinitions[0].image=$IMG' $ECS_TASK_DEFINITION_JSON)
-          echo "UPDATED_ECS_JSON=$UPDATED_ECS_JSON" >> $GITHUB_ENV
+            jq --arg IMG "$IMAGE_URI" '.containerDefinitions[0].image=$IMG' $ECS_TASK_DEFINITION_JSON > updated-ecs-task.json
 
       - name: Updating ECS task definition
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: ${{ env.UPDATED_ECS_JSON }}
+          task-definition: updated-ecs-task.json
           container-name: ${{ env.ECS_CONTAINER_NAME }}
           image: ${{ env.IMAGE_URI }}
 
