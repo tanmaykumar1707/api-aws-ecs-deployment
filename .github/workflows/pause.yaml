@@ -8,8 +8,6 @@ env:
   ECS_SERVICE_NAME: aad-fis-agent-api-service
 
 jobs:
-  call-env:
-    uses: ./.github/workflows/env-vars.yaml
 
   pause-app:
     runs-on: self-hosted
