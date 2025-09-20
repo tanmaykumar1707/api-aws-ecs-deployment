@@ -36,8 +36,13 @@ jobs:
 
       - name: Check if image exists in ECR
         run: |
-          IMAGE_URI=$ECR_REGISTRY/$ECR_REPOSITORY:${{ github.event.inputs.image_tag }}
-          if ! aws ecr describe-images --repository-name ${IMAGE_URI##*/} --image-ids imageTag=${{ github.event.inputs.image_tag }}; then
+          IMAGE_TAG=${{ github.event.inputs.image_tag }}
+          IMAGE_URI=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          if ! aws ecr describe-images \
+            --repository-name $ECR_REPOSITORY \
+#            --image-ids imageTag=$IMAGE_TAG > /dev/null 2>&1; then
+            --image-ids imageTag=$IMAGE_TAG; then
+
             echo "Image not found: $IMAGE_URI"
             exit 1
           fi
