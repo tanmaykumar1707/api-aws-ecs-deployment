@@ -40,9 +40,7 @@ jobs:
           IMAGE_URI=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           if ! aws ecr describe-images \
             --repository-name $ECR_REPOSITORY \
-#            --image-ids imageTag=$IMAGE_TAG > /dev/null 2>&1; then
-            --image-ids imageTag=$IMAGE_TAG; then
-
+            --image-ids imageTag=$IMAGE_TAG > /dev/null 2>&1; then
             echo "Image not found: $IMAGE_URI"
             exit 1
           fi
