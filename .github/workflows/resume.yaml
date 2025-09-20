@@ -3,15 +3,19 @@ name: Resume ECS Service
 on:
   workflow_dispatch:
 
-
-
 jobs:
   call-env:
     uses: ./.github/workflows/env-vars.yaml
   resume:
     runs-on: self-hosted
-    steps:
 
+    needs: call-env
+
+    env:
+      ECS_CLUSTER_NAME: ${{ needs.call-env.outputs.ECS_CLUSTER_NAME }}
+      ECS_SERVICE_NAME: ${{ needs.call-env.outputs.ECS_SERVICE_NAME }}
+
+    steps:
       - name: Resume ECS service
         run: |
           echo "Resuming ECS service..."

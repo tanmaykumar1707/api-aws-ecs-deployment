@@ -10,6 +10,13 @@ jobs:
   build-and-push:
     runs-on: self-hosted
 
+    needs: call-env
+
+    env:
+      AWS_REGION: ${{ needs.call-env.outputs..AWS_REGION }}
+      ECR_REGISTRY: ${{ needs.call-env.outputs..ECR_REGISTRY }}
+      ECR_REPOSITORY: ${{ needs.call-env.outputs..ECR_REPOSITORY }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3

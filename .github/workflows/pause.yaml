@@ -7,10 +7,15 @@ on:
 jobs:
   call-env:
     uses: ./.github/workflows/env-vars.yaml
-  pause:
-    runs-on: self-hosted
-    steps:
 
+  pause-app:
+    runs-on: self-hosted
+    needs: call-env
+    env:
+      ECS_CLUSTER_NAME: ${{ needs.call-env.outputs.ECS_CLUSTER_NAME }}
+      ECS_SERVICE_NAME: ${{ needs.call-env.outputs.ECS_SERVICE_NAME }}
+
+    steps:
       - name: Pause ECS service
         run: |
           echo "Pausing ECS service..."
