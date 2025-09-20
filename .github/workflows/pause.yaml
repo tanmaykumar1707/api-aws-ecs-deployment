@@ -3,6 +3,10 @@ name: Pause ECS Service
 on:
   workflow_dispatch:
 
+env:
+  ECS_CLUSTER_NAME: aad-fis-agent-cluster
+  ECS_SERVICE_NAME: aad-fis-agent-api-service
+
 
 jobs:
   call-env:

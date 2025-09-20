@@ -7,24 +7,22 @@ on:
         description: 'Docker image tag to deploy'
         required: true
 
+
+env:
+  ECR_REGISTRY: 741448954606.dkr.ecr.ap-south-1.amazonaws.com
+  ECR_REPOSITORY: testing/ecs-api-deployment
+  ECS_CLUSTER_NAME: aad-fis-agent-cluster
+  ECS_SERVICE_NAME: aad-fis-agent-api-service
+  ECS_CONTAINER_NAME: aad-task-container
+  ECS_TASK_DEFINITION: aad-fis-agent-api-task
+  ALB_NAME: aad-fis-agent-alb
+  ECS_TASK_DEFINITION_JSON: ecs.json
+
+
 jobs:
-  call-env:
-    uses: ./.github/workflows/env-vars.yaml
 
   deploy:
     runs-on: self-hosted
-
-    needs: call-env
-
-    env:
-      ECR_REGISTRY: ${{ needs.call-env.outputs.ECR_REGISTRY }}
-      ECR_REPOSITORY: ${{ needs.call-env.outputs.ECR_REPOSITORY }}
-      ECS_CONTAINER_NAME: ${{ needs.call-env.outputs.ECS_CONTAINER_NAME }}
-      ECS_TASK_DEFINITION: ${{ needs.call-env.ECS_TASK_DEFINITION }}
-      ALB_NAME: ${{ needs.call-env.ALB_NAME }}
-      ECS_TASK_DEFINITION_JSON: ${{ needs.call-env.ECS_TASK_DEFINITION_JSON }}
-      ECS_CLUSTER_NAME: ${{ needs.call-env.outputs.ECS_CLUSTER_NAME }}
-      ECS_SERVICE_NAME: ${{ needs.call-env.outputs.ECS_SERVICE_NAME }}
 
     steps:
       - name: Checkout repo

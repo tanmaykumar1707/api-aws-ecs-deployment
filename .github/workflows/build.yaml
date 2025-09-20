@@ -3,19 +3,15 @@ name: Build & Push Docker Image
 on:
   workflow_dispatch:
 
+env:
+  AWS_REGION: ap-south-1
+  ECR_REGISTRY: 741448954606.dkr.ecr.ap-south-1.amazonaws.com
+  ECR_REPOSITORY: testing/ecs-api-deployment
+
 jobs:
-  call-env:
-    uses: ./.github/workflows/env-vars.yaml
 
   build-and-push:
     runs-on: self-hosted
-
-    needs: call-env
-
-    env:
-      AWS_REGION: ${{ needs.call-env.outputs.AWS_REGION }}
-      ECR_REGISTRY: ${{ needs.call-env.outputs.ECR_REGISTRY }}
-      ECR_REPOSITORY: ${{ needs.call-env.outputs.ECR_REPOSITORY }}
 
     steps:
       - name: Checkout code
