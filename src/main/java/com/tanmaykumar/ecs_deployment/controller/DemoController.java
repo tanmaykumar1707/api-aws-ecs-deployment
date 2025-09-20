@@ -11,7 +11,7 @@ public class DemoController {
 
     @PostMapping("/test")
     public ResponseEntity<Response> testApi(@RequestBody Request request) {
-        Response response = Response.builder().statusCode("200").data(request.getName()).build();
+        Response response = Response.builder().statusCode("200").data(request.getName() +" " +  request.getVersion()).build();
         return  ResponseEntity.ok(response);
     }
 
