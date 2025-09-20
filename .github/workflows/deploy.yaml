@@ -9,6 +9,7 @@ on:
 
 
 env:
+  AWS_REGION: ap-south-1
   ECR_REGISTRY: 741448954606.dkr.ecr.ap-south-1.amazonaws.com
   ECR_REPOSITORY: testing/ecs-api-deployment
   ECS_CLUSTER_NAME: aad-fis-agent-cluster
@@ -62,6 +63,7 @@ jobs:
           task-definition: updated-ecs-task.json
           container-name: ${{ env.ECS_CONTAINER_NAME }}
           image: ${{ env.IMAGE_URI }}
+          region: ${{ env.AWS_REGION }}
 
       - name: Deploy ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
