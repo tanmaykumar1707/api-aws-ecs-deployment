@@ -20,6 +20,6 @@ jobs:
         run: |
           echo "Pausing ECS service..."
           aws ecs update-service \
-            --cluster ${{ env.ECS_CLUSTER_NAME }} \
-            --service ${{ env.ECS_SERVICE_NAME }} \
+              --cluster $ECS_CLUSTER_NAME \
+              --service $ECS_SERVICE_NAME \
             --desired-count 0
