@@ -1,19 +1,36 @@
 # .github/workflows/env-vars.yaml
 
 
-
-name: Env Variables
+# .github/workflows/env-vars.yaml
+name: Shared Env Variables
 
 on:
-  workflow_call:   # allows other workflows to call this
+  workflow_call:
 
-env:
-  AWS_REGION: ap-south-1
-  ECR_REGISTRY: 741448954606.dkr.ecr.ap-south-1.amazonaws.com
-  ECR_REPOSITORY: testing/ecs-api-deployment
-  ECS_CLUSTER_NAME: aad-fis-agent-cluster
-  ECS_SERVICE_NAME: aad-fis-agent-api-service
-  ECS_CONTAINER_NAME: aad-task-container
-  ECS_TASK_DEFINITION: aad-fis-agent-api-task
-  ALB_NAME: aad-fis-agent-alb
-  ECS_TASK_DEFINITION_JSON: ecs.json
+jobs:
+  load-env:
+    runs-on: ubuntu-latest
+    outputs:
+      AWS_REGION: ${{ env.AWS_REGION }}
+      ECR_REGISTRY: ${{ env.ECR_REGISTRY }}
+      ECR_REPOSITORY: ${{ env.ECR_REPOSITORY }}
+      ECS_CLUSTER_NAME: ${{ env.ECS_CLUSTER_NAME }}
+      ECS_SERVICE_NAME: ${{ env.ECS_SERVICE_NAME }}
+      ECS_CONTAINER_NAME: ${{ env.ECS_CONTAINER_NAME }}
+      ECS_TASK_DEFINITION: ${{ env.ECS_TASK_DEFINITION }}
+      ALB_NAME: ${{ env.ALB_NAME }}
+      ECS_TASK_DEFINITION_JSON: ${{ env.ECS_TASK_DEFINITION_JSON }}
+    env:
+      AWS_REGION: ap-south-1
+      ECR_REGISTRY: 741448954606.dkr.ecr.ap-south-1.amazonaws.com
+      ECR_REPOSITORY: testing/ecs-api-deployment
+      ECS_CLUSTER_NAME: aad-fis-agent-cluster
+      ECS_SERVICE_NAME: aad-fis-agent-api-service
+      ECS_CONTAINER_NAME: aad-task-container
+      ECS_TASK_DEFINITION: aad-fis-agent-api-task
+      ALB_NAME: aad-fis-agent-alb
+      ECS_TASK_DEFINITION_JSON: ecs.json
+    steps:
+      - name: Export env
+        run: echo "Environment variables loaded."
+
