@@ -13,9 +13,9 @@ jobs:
     needs: call-env
 
     env:
-      AWS_REGION: ${{ needs.call-env.outputs..AWS_REGION }}
-      ECR_REGISTRY: ${{ needs.call-env.outputs..ECR_REGISTRY }}
-      ECR_REPOSITORY: ${{ needs.call-env.outputs..ECR_REPOSITORY }}
+      AWS_REGION: ${{ needs.call-env.outputs.AWS_REGION }}
+      ECR_REGISTRY: ${{ needs.call-env.outputs.ECR_REGISTRY }}
+      ECR_REPOSITORY: ${{ needs.call-env.outputs.ECR_REPOSITORY }}
 
     steps:
       - name: Checkout code

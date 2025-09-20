@@ -17,9 +17,9 @@ jobs:
     needs: call-env
 
     env:
-      ECR_REGISTRY: ${{ needs.call-env.outputs..ECR_REGISTRY }}
-      ECR_REPOSITORY: ${{ needs.call-env.outputs..ECR_REPOSITORY }}
-      ECS_CONTAINER_NAME: ${{ needs.call-env.outputs..ECS_CONTAINER_NAME }}
+      ECR_REGISTRY: ${{ needs.call-env.outputs.ECR_REGISTRY }}
+      ECR_REPOSITORY: ${{ needs.call-env.outputs.ECR_REPOSITORY }}
+      ECS_CONTAINER_NAME: ${{ needs.call-env.outputs.ECS_CONTAINER_NAME }}
       ECS_TASK_DEFINITION: ${{ needs.call-env.ECS_TASK_DEFINITION }}
       ALB_NAME: ${{ needs.call-env.ALB_NAME }}
       ECS_TASK_DEFINITION_JSON: ${{ needs.call-env.ECS_TASK_DEFINITION_JSON }}
