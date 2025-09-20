@@ -1,5 +1,11 @@
 name: Deploy ECS Service
 
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: 'Docker image tag to deploy'
+        required: true
 
 
 env:
@@ -11,12 +17,7 @@ env:
   ECS_CONTAINER_NAME: aad-task-container
   ECS_TASK_DEFINITION: aad-fis-agent-api-task
 
-on:
-  workflow_dispatch:
-    inputs:
-      image_tag:
-        description: 'Docker image tag to deploy'
-        required: true
+
 
 jobs:
   deploy:
